@@ -65,10 +65,10 @@
             <div class="">
                 <div class="col-lg-6 card">
                     <meta http-equiv="content-type" content="text/html;charset=UTF-8">
-                    <form id="zohoForm" class="form-horizontal m-t-40 row" action="https://crm.zoho.com/crm/WebToCaseForm" name="WebToCases400197000392916071" method="POST" enctype="multipart/form-data" style="padding: 40px;" accept-charset="UTF-8" siq_id="autopick_8497" _lpchecked="1">
-                        <input type="text" style="display:none;" name="xnQsjsdp" value="436f8eca68ab24f333a60295a19ccb22c58ad127b259deaebd8424a883a4ddaf">
+                    <form id="zohoForm" class="form-horizontal m-t-40 row" action="https://crm.zoho.com/crm/WebToCaseForm" name="WebToCases400197000486850007" method="POST" enctype="multipart/form-data" style="padding: 40px;" accept-charset="UTF-8" siq_id="autopick_8497" _lpchecked="1">
+                        <input type="text" style="display:none;" name="xnQsjsdp" value="e0a8e62729edb6db1d3097fa5ce7984883083b12fc53ff0eec1813d196a30a4b">
                         <input type="hidden" name="zc_gad" id="zc_gad" value="undefined">
-                        <input type="text" style="display:none;" name="xmIwtLD" value="fa103dbb8056b3bca7fcdbc1ecc1aab894bc3904194fa059aadf31fe29044a51e0fa1679d69a5e8f3a49857d348913b0">
+                        <input type="text" style="display:none;" name="xmIwtLD" value="6dfaa95137afa120779fe0f0fa7d8b8501d09d3fd362a5ab5724c2cea42a2d05611171b59c312b686d7a648d4c4a93a4">
                         <input type="text" style="display:none;" name="actionType" value="Q2FzZXM=">
                         <input type="text" style="display:none;" name="returnURL" value="https://laudex.mx/gracias-renovaciones"> <br><br>
 
@@ -83,7 +83,7 @@
                                 <p>Promedio: <input id="promedio" class="form-control2 date-inputmask" name="CASECF74"></input></p>
                                 <p>Avance: <input id="avance" class="form-control2 date-inputmask" name="CASECF73"></input></p>
                                 <p>Matricula: <input id="matricula" class="form-control2 date-inputmask" name="CASECF40"></input></p>
-                                <p>Campus: <input id="campus" class="form-control2 date-inputmask" name=""></input></p>
+                                <p>Campus: <input id="campus" class="form-control2 date-inputmask" name="CASECF10"></input></p>
                             </div>
 
                             <div id="hnovig" style="display: none;">
@@ -160,7 +160,7 @@
                             <label>
                                 Monto: 
                             </label>
-                            <input id="monto" class="form-control2 date-inputmask" name="CASECF31"></input>
+                            <input id="monto" class="form-control2 date-inputmask" name="CASECF31" oninput="formatearMonto(this)"></input>
                         </div>
                         <div class="col-lg-6 form-group">
                             <label>Comentarios</label>
@@ -202,12 +202,15 @@
                         <script>
                         </script>
                         <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.9.359/pdf.min.js"></script>
+                        <script src="https://cdnjs.cloudflare.com/ajax/libs/inputmask/5.0.8/inputmask.min.js"></script>
                         <script src="js/lector.js"></script>
                         <script>
                             let mndFileds = new Array('CASECF81', 'CASECF17', 'CASECF31', 'Case Origin', 'CASECF20', 'CASECF21', 'Email', 'Subject', 'theFile');
                             let fldLangVal = new Array('Fecha de depósito', '¿Qué periodo vas a cursar?', 'Monto solicitado', 'Origen de Renovación', '¿Cambiaste de campus?', '¿Cambiaste de carrera?', 'Correo electrónico', 'Nombre completo', );
                             let name = '';
                             let email = '';
+
+  
                             
 
                             function checkMandatory400197000111404699(evt) {
@@ -376,9 +379,8 @@
 
 
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="js/jquery.js"></script>    <!-- Footer section -->
-
     <div id="response"></div>
-    
+
 </body>
 
 </html>

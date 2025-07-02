@@ -106,8 +106,7 @@ async function procesarPDFCHistorial(datos) {
 
     const regexCampus = /UNIVA.-\s+(.+?)\s+MODALIDAD:/;
     const campusMatch = textoCompleto.match(regexCampus);
-    const campus = campusMatch ? campusMatch[1] : "No encontrado";
-
+    const campus = campusMatch ? campusMatch[1].toLowerCase().replace(/\b\w/, l => l.toUpperCase()) : "No encontrado";
     // ======================
     // 📋 Cargar al formulario
     // ======================
@@ -135,3 +134,32 @@ function calcularDiferenciaMeses(fecha1, fecha2) {
 
     return (year2 - year1) * 12 + (month2 - month1);
 }
+
+function formatearMonto(input) {
+    let valor = input.value;
+
+    // Elimina todo lo que no sea número o punto
+    valor = valor.replace(/[^\d.]/g, '');
+
+    // Solo un punto decimal permitido
+    const partes = valor.split('.');
+    if (partes.length > 2) {
+        valor = partes[0] + '.' + partes[1]; // Ignora segundos puntos
+    }
+
+    // Limita los decimales a 2 cifras
+    let entero = partes[0];
+    let decimal = partes[1] ? partes[1].substring(0, 2) : '';
+
+    // Formatea con comas el entero
+    entero = entero.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+    // Une de nuevo
+    input.value = decimal ? `${entero}.${decimal}` : entero;
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+    const comentarios = document.querySelector('textarea[name="CASECF39"]');
+    comentarios.value = "Renovación hecha directamente con el campus";
+    comentarios.readOnly = true;
+});
