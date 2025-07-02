@@ -78,12 +78,12 @@
 
                             <div id="datosdocumentosH" style="display: none;">
                                 <label class="sec_title2">Información del Historial: </label>
-                                <p>Nombre Completo del Alumno<input type="text" id="alumno" class="form-control2" maxlength="300" name="Subject"></input></p>
-                                <p>Fecha de emisión: <input id="fechah" class="form-control2 date-inputmask"></input></p>
-                                <p>Promedio: <input id="promedio" class="form-control2 date-inputmask" name="CASECF74"></input></p>
-                                <p>Avance: <input id="avance" class="form-control2 date-inputmask" name="CASECF73"></input></p>
-                                <p>Matricula: <input id="matricula" class="form-control2 date-inputmask" name="CASECF40"></input></p>
-                                <p>Campus: <input id="campus" class="form-control2 date-inputmask" name="CASECF10"></input></p>
+                                <p>Nombre Completo del Alumno<input type="text" id="alumno" class="form-control2" maxlength="300" name="Subject" required></input></p>
+                                <p>Fecha de emisión: <input id="fechah" class="form-control2 date-inputmask" required></input></p>
+                                <p>Promedio: <input id="promedio" class="form-control2 date-inputmask" name="CASECF74" required></input></p>
+                                <p>Avance: <input id="avance" class="form-control2 date-inputmask" name="CASECF73" required></input></p>
+                                <p>Matricula: <input id="matricula" class="form-control2 date-inputmask" name="CASECF40" required></input></p>
+                                <p>Campus: <input id="campus" class="form-control2 date-inputmask" name="CASECF10" required></input></p>
                             </div>
 
                             <div id="hnovig" style="display: none;">
@@ -97,9 +97,9 @@
                         </div>-->
                         <div class="col-lg-6 form-group">
                             <label>Teléfono</label>
-                            <input type="text" class="form-control phone-inputmask" maxlength="300" name="Phone">
+                            <input type="text" class="form-control phone-inputmask" maxlength="300" name="Phone" required>
                             <label>Email</label>
-                            <input type="text" class="form-control email-inputmask" maxlength="300" name="Email">
+                            <input type="text" class="form-control email-inputmask" maxlength="300" name="Email" required>
                         </div>
                         <div class="col-lg-6 form-group">
                             <label>¿A qué periodo pasa el alumno?</label>
@@ -160,7 +160,7 @@
                             <label>
                                 Monto: 
                             </label>
-                            <input id="monto" class="form-control2 date-inputmask" name="CASECF31" oninput="formatearMonto(this)"></input>
+                            <input id="monto" class="form-control2 date-inputmask" name="CASECF31" oninput="formatearMonto(this)" required></input>
                         </div>
                         <div class="col-lg-6 form-group">
                             <label>Comentarios</label>
