@@ -160,6 +160,6 @@ function formatearMonto(input) {
 
 document.addEventListener("DOMContentLoaded", function () {
     const comentarios = document.querySelector('textarea[name="CASECF39"]');
-    comentarios.value = "Renovación hecha directamente con el campus";
+    comentarios.value = "Renovación hecha directamente por el campus";
     comentarios.readOnly = true;
 });
