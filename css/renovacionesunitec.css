@@ -1,0 +1,108 @@
+
+
+.row1 {
+    display: flex;
+    height: 50px;
+    flex-direction: row;
+    min-width: 0;
+    flex-wrap: nowrap;
+    align-content: center;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    height: 30%;
+    max-width: 100%;
+    max-height: 50%;
+    box-sizing: border-box;
+    
+
+    /* Añadido para ocupar más espacio en la pantalla */
+    width: 100%; /* O ajusta a la anchura deseada */
+    height: 50%; /* O ajusta a la altura deseada */
+    max-width: 100%; /* Para asegurarse de que no sobrepase el contenedor */
+    max-height: 100%; /* Para asegurarse de que no sobrepase el contenedor */
+    box-sizing: border-box; /* Para incluir padding y border en el tamaño total */
+}
+
+
+/* Opcional: ajusta el tamaño del contenido de la tarjeta */
+.row1-content {
+    width: 100%;
+    padding: 1rem; /* Ajusta según sea necesario */
+    box-sizing: border-box;
+}
+
+
+.header {
+    margin-bottom: 0; /* Corrige el valor a '0' en lugar de '00px' */
+    text-align: center;
+    width: 100%; /* O ajusta a la anchura deseada */
+    height: 100%; /* O ajusta a la altura deseada */
+    max-width: 100%; /* Para asegurarse de que no sobrepase el contenedor */
+    max-height: 100%; /* Para asegurarse de que no sobrepase el contenedor */
+    box-sizing: border-box; /* Para incluir padding y border en el tamaño total */
+
+    /* Añadido para centrar el contenido */
+    display: flex;
+    justify-content: center; /* Centra horizontalmente */
+    align-items: center; /* Centra verticalmente */
+
+}
+
+.header-content {
+    width: 100%;
+    padding: 1rem; /* Ajusta según sea necesario */
+    box-sizing: border-box;
+}
+
+.columna-izquierda4 {
+	width: 100%; /* Ajusta el ancho según tus necesidades */
+}
+.columna-izquierda4 img {
+	max-width: 40%; /* Asegura que la imagen no sobrepase su contenedor */
+	height: auto;
+}
+
+.titulodatos{
+    color: rgba(152,209,64);
+}
+
+.form-control2 {
+    display: block;
+    width: 100%;
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: rgba(152,209,64);;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out
+}
+
+.select.form-control:not([size]):not([multiple]) {
+    height: calc(2.25rem + 2px)
+}
+
+.sec_title2 {
+    font-size: 20px;
+    line-height: 60px;
+    font-weight: 300;
+    color: #1f355e;
+    margin: 10 20 30px;
+}
+
+.sec_title3 {
+    font-size: 19px;
+    /* line-height: 60px; */
+    /* font-weight: 300; */
+    /* color: #929292; */
+    margin: 10px 0px 10px;
+}
+
+.header_bg_2 {
+    position: relative;
+    padding: 0px 0;
+    z-index: 0;
+}
