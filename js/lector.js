@@ -30,194 +30,101 @@ function procesarArchivoH() {
 }
 
 
-function procesarPDFCHistorial(datos) {
-    pdfjsLib.getDocument(datos).promise.then(function(pdf) {
-        pdf.getPage(1).then(function(pagina) {
-            pagina.getTextContent().then(function(contenido) {
-                const texto = contenido.items.map(function(item) {
-                    return item.str;
-                }).join(' ');
+async function procesarPDFCHistorial(datos) {
+    const pdf = await pdfjsLib.getDocument(datos).promise;
+    const numPages = pdf.numPages;
+    let textoCompleto = '';
 
-                divhnovig.style.display = "none";
-
-
-                console.log(texto)
-
-                const regexFechaHistorial = /Fecha\s+de\s+consulta:\s+(\d{2}\/\d{2}\/\d{4})/; // Coincide con el formato de fecha: dd/mm/aaaa
-                const fechaHistorialMatch = texto.match(regexFechaHistorial);
-                const fechaHistorial = fechaHistorialMatch ? fechaHistorialMatch[1] : "No encontrada";
-
-                if (fechaHistorial !== "No encontrada") {
-                    const partesFecha = fechaHistorial.split('/');
-                    const fechaDoc = new Date(partesFecha[2], partesFecha[1] - 1, partesFecha[0]);
-                    const fechaActual = new Date();
-
-                    const diferenciaMesesH = calcularDiferenciaMeses(fechaDoc, fechaActual);
-
-                    console.log(fechaDoc.getFullYear())
-                    console.log(fechaDoc)
-                    console.log(fechaActual)
-                    console.log(diferenciaMesesH)
-
-
-                    if (diferenciaMesesH > 1 || fechaDoc.getFullYear() !== 2025) {
-                        divdatoshistorial.style.display = "none";
-                        divhnovig.style.display = "block";
-                    }
-                }
-
-                // Buscar el promedio general
-                const regexPromedioAvance = /Avance\s+\d+\s+(\d+\.\d+)\s+\d+\.\d+\s+(\d+\.\d+%)/;
-                const promedioMatch = texto.match(regexPromedioAvance);
-                const promedio = promedioMatch ? promedioMatch[1] : "No encontrado";
-
-                // Buscar el avance
-                const regexAvance = /Avance\s+\d+\s+\d+\.\d+\s+\d+\.\d+\s+(\d+\.\d+)%/;
-                const avanceMatch = texto.match(regexAvance);
-                const avance = avanceMatch ? avanceMatch[1] : "No encontrado";
-
-                        // Expresión regular para extraer el nombre del campus
-                const regexCampus = /CAMPUS\s+(\w+)/;
-                const campusMatch = texto.match(regexCampus);
-                const campus = campusMatch ? campusMatch[1] : "No encontrado";
-                console.log(campus)
-                const formattedCampus = campus.charAt(0).toUpperCase() + campus.slice(1).toLowerCase();
-                console.log(formattedCampus)
-
-
-                if (formattedCampus === "En_linea"){
-                    document.getElementById("CASECF10").value = "Online";
-                }
-                else {
-                    document.getElementById("CASECF10").value = formattedCampus;
-                }
-
-                document.getElementById("fechah").value = fechaHistorial;
-                document.getElementById("fechah").readOnly = true;
-                document.getElementById("promedio").value = promedio;
-                document.getElementById("promedio").readOnly = true;
-                document.getElementById("avance").value = avance;
-                document.getElementById("avance").readOnly = true;
-                
-            });
-        });
-    });
-}
-
-function procesarArchivoC() {
-    const archivo = document.getElementById('calculadora').files[0];
-    divdatoscalculadora.style.display = "block";
-
-
-
-    if (!archivo) {
-        alert('Por favor, seleccione un archivo PDF o una imagen.');
-        return;
+    for (let i = 1; i <= numPages; i++) {
+        const pagina = await pdf.getPage(i);
+        const contenido = await pagina.getTextContent();
+        const textoPagina = contenido.items.map(item => item.str).join(' ');
+        textoCompleto += textoPagina + '\n'; // separa por páginas
     }
 
-    const lector = new FileReader();
-    lector.onload = function(evento) {
-        const datos = evento.target.result;
-        if (archivo.type === 'application/pdf') {
-            procesarPDFCalculadora(datos);
-        } else {
-            alert('Tipo de archivo no compatible. Por favor, seleccione un archivo PDF o una imagen.');
+    divhnovig.style.display = "none";
+    console.log(textoCompleto);
+
+    // ==============================
+    // 🔍 Extraer Fecha del Historial
+    // ==============================
+    const regexFechaHistorial = /(\w+,\d{2}\s+\w+,\d{4}\s+\d{2}:\d{2}:\d{2}\s+[APap][Mm])/;
+    const fechaHistorialMatch = textoCompleto.match(regexFechaHistorial);
+    const fechaHistorial = fechaHistorialMatch ? fechaHistorialMatch[1] : "No encontrada";
+    console.log(fechaHistorial);
+
+    if (fechaHistorial !== "No encontrada") {
+        const limpio = fechaHistorial.replace(/^\w+,/, '').trim();
+        const normalizado = limpio.replace(',', '');
+        const fechaFinal = normalizado.replace(/([ap])m/i, (_, l) => l.toUpperCase() + 'M');
+        const fecha = new Date(fechaFinal);
+
+        const yyyy = fecha.getFullYear();
+        const mm = String(fecha.getMonth() + 1).padStart(2, '0');
+        const dd = String(fecha.getDate()).padStart(2, '0');
+
+        const fechaFormateada = `${yyyy}-${mm}-${dd}`;
+        const fechaHTML = `${dd}-${mm}-${yyyy}`;
+
+        const partesFecha = fechaFormateada.split('-');
+        const fechaDoc = new Date(partesFecha[0], partesFecha[1] - 1, partesFecha[2]);
+        const fechaActual = new Date();
+        const diferenciaMesesH = calcularDiferenciaMeses(fechaDoc, fechaActual);
+
+        if (diferenciaMesesH > 5 || fechaDoc.getFullYear() !== 2025) {
+            divdatoshistorial.style.display = "none";
+            divhnovig.style.display = "block";
         }
-    };
-    lector.readAsArrayBuffer(archivo);
-}
 
+        document.getElementById("fechah").value = fechaHTML;
+        document.getElementById("fechah").readOnly = true;
+    }
 
-function procesarPDFCalculadora(datos) {
-    pdfjsLib.getDocument(datos).promise.then(function(pdf) {
-        pdf.getPage(1).then(function(pagina) {
-            pagina.getTextContent().then(function(contenido) {
-                const texto = contenido.items.map(function(item) {
-                    return item.str;
-                }).join(' ');
-                divcalculadoraincorrecta.style.display = "none";
-                divcalnov.style.display = "none";
+    // =============================
+    // 🔍 Otros Datos del Historial
+    // =============================
 
+    const regexPromedioAvance = /Promedio:\s+([\d.]+)/;
+    const promedioMatch = textoCompleto.match(regexPromedioAvance);
+    const promedio = promedioMatch ? promedioMatch[1] : "No encontrado";
 
+    const regexAvance = /Porcentaje de Avance:\s+([\d.]+)%/;
+    const avanceMatch = textoCompleto.match(regexAvance);
+    const avance = avanceMatch ? avanceMatch[1] : "No encontrado";
 
-                console.log(texto);
+    const regexMaterias = /COLEGIATURA\s+\d{2}\/\d{2}\/\d{4}\s+(\d+)/;
+    const materiasMatch = textoCompleto.match(regexMaterias);
+    const numMaterias = materiasMatch ? materiasMatch[1] : 0;
 
-                const regexFechaCalculadora = /Fecha:\s+(\d{2}\/\d{2}\/\d{4})/; // Coincide con el formato de fecha: dd/mm/aaaa
-                const fechaCalculadoraMatch = texto.match(regexFechaCalculadora);
-                const fechaCalculadora = fechaCalculadoraMatch ? fechaCalculadoraMatch[1] : "No encontrada";
+    const regexMatricula = /MATRICULA:\s+(.+?)\s+FECHA ACUERDO:/;
+    const matriculaMatch = textoCompleto.match(regexMatricula);
+    const matricula = matriculaMatch ? matriculaMatch[1] : "No encontrada";
 
-                if (fechaCalculadora !== "No encontrada") {
-                    const partesFecha = fechaCalculadora.split('/');
-                    const fechaDoc = new Date(partesFecha[2], partesFecha[1] - 1, partesFecha[0]);
-                    const fechaActual = new Date();
+    const regexAlumno = /NOMBRE:\s+(.+?)\s+PROGRAMA:/;
+    const alumnoMatch = textoCompleto.match(regexAlumno);
+    const alumno = alumnoMatch ? alumnoMatch[1] : "No encontrado";
 
-                    const diferenciaMeses = calcularDiferenciaMeses(fechaDoc, fechaActual);
+    const regexCampus = /UNIVA.-\s+(.+?)\s+MODALIDAD:/;
+    const campusMatch = textoCompleto.match(regexCampus);
+    const campus = campusMatch ? campusMatch[1] : "No encontrado";
 
-                    console.log(fechaDoc.getFullYear())
-                    console.log(fechaDoc)
-                    console.log(fechaActual)
-                    console.log(diferenciaMeses)
+    // ======================
+    // 📋 Cargar al formulario
+    // ======================
+    document.getElementById("promedio").value = promedio;
+    document.getElementById("promedio").readOnly = true;
 
+    document.getElementById("avance").value = avance;
+    document.getElementById("avance").readOnly = true;
 
-                    if (diferenciaMeses > 1 || fechaDoc.getFullYear() !== 2025) {
-                        divdatoscalculadora.style.display = "none";
-                        divcalnov.style.display = "block";
-                    }
-                }
-                
-                // Buscar el monto
-                const regexMonto = /ciclo\s+\d+\s+es\s+de\s+\$([\d,]+\.\d{2})/;
-                const montoMatch = texto.match(regexMonto);
-                const monto = montoMatch ? montoMatch[1] : "No encontrado";
+    document.getElementById("matricula").value = matricula;
+    document.getElementById("matricula").readOnly = true;
 
-                // Contar el número de materias
-                const regexMaterias = /COLEGIATURA\s+\d{2}\/\d{2}\/\d{4}\s+(\d+)/;
-                const materiasMatch = texto.match(regexMaterias);
-                const numMaterias = materiasMatch ? materiasMatch[1] : 0;
+    document.getElementById("alumno").value = alumno;
+    document.getElementById("alumno").readOnly = true;
 
-                // Buscar la matrícula
-                const regexMatricula = /Número\s*de\s*cuenta:\s*(\d+)/;
-                const matriculaMatch = texto.match(regexMatricula);
-                const matricula = matriculaMatch ? matriculaMatch[1] : "No encontrada";
-
-                // Buscar tipo de calculadora
-                const regextipocalculadora = /alternativa\s+de\s+pago\s+de:\s+(UN\s+PAGO\s+\(\d+\))/;
-                const tipocalculadoraMatch = texto.match(regextipocalculadora);
-                const tipocalculadora = tipocalculadoraMatch ? tipocalculadoraMatch[1] : "No encontrada";
-                if (tipocalculadora !== "UN PAGO (100)") {
-                    divcalculadoraincorrecta.style.display = "block";
-                    divdatoscalculadora.style.display = "none";
-
-                }             
-
-
-                const regexAlumno = /Alumno:\s+(.+)\s+Campus:/;
-                const alumnoMatch = texto.match(regexAlumno);
-                const alumno = alumnoMatch ? alumnoMatch[1] : "No encontrado";
-                
-
-                // Actualizar el contenido del HTML
-                document.getElementById("fechac").value = fechaCalculadora;
-                document.getElementById("fechac").readOnly = true;
-
-                document.getElementById("monto").value = monto;
-                document.getElementById("monto").readOnly = true;
-
-                document.getElementById("materias").value = numMaterias;
-                document.getElementById("materias").readOnly = true;
-
-                document.getElementById("matricula").value = matricula;
-                document.getElementById("matricula").readOnly = true;
-
-                document.getElementById("tipodecalculadora").value = tipocalculadora;
-                document.getElementById("tipodecalculadora").readOnly = true;
-
-                document.getElementById("alumno").value = alumno;
-                document.getElementById("alumno").readOnly = true;
-        
-            });
-        });
-    });
+    document.getElementById("campus").value = campus;
+    document.getElementById("campus").readOnly = true;
 }
 
 function calcularDiferenciaMeses(fecha1, fecha2) {

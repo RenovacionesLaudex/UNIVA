@@ -48,13 +48,9 @@
 <link rel="icon" href="images/favicon-16x16.ico" sizes="16x16" />
 <link rel="apple-touch-icon-precomposed" href="images/favicon-32x32.ico" />
 <meta name="msapplication-TileImage" content="favicon-32x32.ico" />
-
-
 </head>
 
 <body>
-
-
     <!-- Renovation form section -->
     <section class="payloan_header_bg header_bg_1">
         <div class="container">
@@ -76,9 +72,8 @@
                         <input type="text" style="display:none;" name="actionType" value="Q2FzZXM=">
                         <input type="text" style="display:none;" name="returnURL" value="https://laudex.mx/gracias-renovaciones"> <br><br>
 
-
-                        <div class="form-group col-md-6 m-t-20">
-                            <label>Adjunta tu historial</label>
+                        <div class="col-lg-6 form-group">
+                            <label>Adjunta el historial</label>
                             <input id="historial" type="file" class="form-control2" name="theFile" id="theFile" accept=".pdf" onchange="procesarArchivoH()">
 
                             <div id="datosdocumentosH" style="display: none;">
@@ -88,29 +83,26 @@
                                 <p>Promedio: <input id="promedio" class="form-control2 date-inputmask" name="CASECF74"></input></p>
                                 <p>Avance: <input id="avance" class="form-control2 date-inputmask" name="CASECF73"></input></p>
                                 <p>Matricula: <input id="matricula" class="form-control2 date-inputmask" name="CASECF40"></input></p>
-                                <p>Monto: <input id="monto" class="form-control2 date-inputmask" name="CASECF31"></input></p>
+                                <p>Campus: <input id="campus" class="form-control2 date-inputmask" name=""></input></p>
                             </div>
 
                             <div id="hnovig" style="display: none;">
-                                <label class="sec_title2">¡Tu historial no esta vigente!</label>
-                                <p>Debes descargar tu historial actual dando clic en:</p>
-                                <a href="https://ventanilla-enlinea.unitec.mx/login" class="sec_title2" target="_blank">Ventanilla en linea Unitec</a>
+                                <label class="sec_title2">¡El historial no esta vigente!</label>
                             </div>
                         </div>
-                        <div class="form-group col-md-6 m-t-20">
-                            <label>Email</label>
-                            <input type="text" class="form-control email-inputmask" maxlength="300" name="Email">
-                        </div>
+
                         <!--<div class="form-group col-md-6 m-t-20">
                             <label>Email Obligado Solidario</label>
                             <input type="text" class="form-control email-inputmask" maxlength="100" name="CASECF42">
                         </div>-->
-                        <div class="form-group col-md-6 m-t-20">
+                        <div class="col-lg-6 form-group">
                             <label>Teléfono</label>
                             <input type="text" class="form-control phone-inputmask" maxlength="300" name="Phone">
+                            <label>Email</label>
+                            <input type="text" class="form-control email-inputmask" maxlength="300" name="Email">
                         </div>
                         <div class="col-lg-6 form-group">
-                            <label>¿A qué periodo pasas?</label>
+                            <label>¿A qué periodo pasa el alumno?</label>
                             <select class="custom-select col-12" name="CASECF17">
                                 <option value="-None-">-None-</option>
                                 <option value="1">1</option>
@@ -141,7 +133,7 @@
                             <label>Monto Solicitado</label>
                             <input type="text" class="form-control currency-inputmask" name="CASECF31">
                         </div> -->
-                        <div class="form-group col-md-6 m-t-20">
+                        <div class="col-lg-6 form-group">
                             <label>Fecha de renovación</label>
 
                             <input
@@ -164,14 +156,17 @@
                                 document.getElementById('CASECF81').value = fechaHoy;
                             </script>
                         </div>
-
-
-
-                        <div class="form-group col-md-12 m-t-20">
+                        <div class="col-lg-6 form-group">
+                            <label>
+                                Monto: 
+                            </label>
+                            <input id="monto" class="form-control2 date-inputmask" name="CASECF31"></input>
+                        </div>
+                        <div class="col-lg-6 form-group">
                             <label>Comentarios</label>
                             <textarea name="CASECF39" class="form-control" maxlength="2000" placeholder="Mensaje"></textarea>
                         </div>
-                        <div class="form-group col-md-6 m-t-20" style="display: none;">
+                        <div class="col-lg-6 form-group" style="display: none;">
                             <label>Estado</label>
                             <select class="custom-select col-12" name="Status">
                                 <option selected="" value="Nuevo">Nuevo</option>
@@ -190,7 +185,7 @@
                                 <option value="Inicio">Inicio</option>
                             </select>
                         </div>
-                        <div class="form-group col-md-6 m-t-20" style="display: none;">
+                        <div class="col-lg-6 form-group" style="display: none;">
                             <label>Origen de Renovacion</label>
                             <select class="custom-select col-12" name="Case Origin">
                                 <option value="-None-">-None-</option>
@@ -200,13 +195,11 @@
                                 <option selected="" value="Página Laudex">Página Laudex</option>
                             </select>
                         </div>
-
-                        <div class="form-group col-md-12 m-t-20">
+                        <div class="col-lg-6 form-group">
                             <div class="g-recaptcha" data-sitekey="6Lc6zBobAAAAAGFTWILNftBTvxfmyPi1s0AqTXvC"><div style="width: 304px; height: 78px;"><div><iframe title="reCAPTCHA" width="304" height="78" role="presentation" name="a-3chyzjehvx8b" frameborder="0" scrolling="no" sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-top-navigation allow-modals allow-popups-to-escape-sandbox allow-storage-access-by-user-activation" src="https://www.google.com/recaptcha/api2/anchor?ar=1&amp;k=6Lc6zBobAAAAAGFTWILNftBTvxfmyPi1s0AqTXvC&amp;co=aHR0cHM6Ly9sYXVkZXgubXg6NDQz&amp;hl=es-419&amp;v=joHA60MeME-PNviL59xVH9zs&amp;size=normal&amp;cb=44vavz8ranaw"></iframe></div><textarea id="g-recaptcha-response" name="g-recaptcha-response" class="g-recaptcha-response" style="width: 250px; height: 40px; border: 1px solid rgb(193, 193, 193); margin: 10px 25px; padding: 0px; resize: none; display: none;"></textarea></div><iframe style="display: none;"></iframe></div>
                             <input type="submit" class="common_btn" id="formsubmit" value="Enviar" style="margin-top: 10px;">
                         </div>
                         <script>
-
                         </script>
                         <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.9.359/pdf.min.js"></script>
                         <script src="js/lector.js"></script>

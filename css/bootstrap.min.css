@@ -524,27 +524,27 @@ pre code {
     margin-left: auto
 }
 
-@media (min-width: 576px) {
+@media (min-width: 976px) {
     .container {
-        max-width:540px
+        max-width:940px
     }
 }
 
-@media (min-width: 768px) {
+@media (min-width: 1220px) {
     .container {
-        max-width:720px
+        max-width: 1220px
     }
 }
 
-@media (min-width: 992px) {
+@media (min-width: 1592px) {
     .container {
-        max-width:960px
+        max-width:1560px
     }
 }
 
-@media (min-width: 1200px) {
+@media (min-width: 1800px) {
     .container {
-        max-width:1170px
+        max-width:1800px
     }
 }
 
@@ -1356,9 +1356,9 @@ pre code {
 
     .col-lg-6 {
         -webkit-box-flex: 0;
-        -ms-flex: 0 0 50%;
-        flex: 0 0 50%;
-        max-width: 50%
+        -ms-flex: 0 0 100%;
+        flex: 0 0 100%;
+        max-width: 100%
     }
 
     .col-lg-7 {
