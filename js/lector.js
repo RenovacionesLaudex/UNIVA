@@ -43,42 +43,82 @@ async function procesarPDFCHistorial(datos) {
     }
 
     divhnovig.style.display = "none";
-    console.log(textoCompleto);
 
     // ==============================
     // 🔍 Extraer Fecha del Historial
     // ==============================
-    const regexFechaHistorial = /(\w+,\d{2}\s+\w+,\d{4}\s+\d{2}:\d{2}:\d{2}\s+[APap][Mm])/;
+    const regexFechaHistorial = /([^\s,]+,\d{2}\s+[^\s,]+,\d{4}\s+\d{2}:\d{2}:\d{2}\s+[APap][Mm])/;
     const fechaHistorialMatch = textoCompleto.match(regexFechaHistorial);
     const fechaHistorial = fechaHistorialMatch ? fechaHistorialMatch[1] : "No encontrada";
     console.log(fechaHistorial);
 
+
     if (fechaHistorial !== "No encontrada") {
-        const limpio = fechaHistorial.replace(/^\w+,/, '').trim();
-        const normalizado = limpio.replace(',', '');
+        // 1. Eliminar el día de la semana (incluyendo acentos)
+        const limpio = fechaHistorial.replace(/^[^,]+,/, '').trim();
+        console.log(`Fecha limpio: ${limpio}`); // "06 Agosto,2025 10:08:07 Am"
+        
+        // 2. Reemplazar comas por espacios y normalizar
+        const normalizado = limpio.replace(/,/g, ' ').replace(/\s+/g, ' ').trim();
+        console.log(`Fecha normalizado: ${normalizado}`); // "06 Agosto 2025 10:08:07 Am"
+        
+        // 3. Formatear AM/PM y convertir mes a inglés
         const fechaFinal = normalizado.replace(/([ap])m/i, (_, l) => l.toUpperCase() + 'M');
-        const fecha = new Date(fechaFinal);
+        const meses = {
+            "Enero": "January", "Febrero": "February", "Marzo": "March",
+            "Abril": "April", "Mayo": "May", "Junio": "June",
+            "Julio": "July", "Agosto": "August", "Septiembre": "September",
+            "Octubre": "October", "Noviembre": "November", "Diciembre": "December"
+        };
+        
+        // Convertir mes español a inglés
+        const fechaFinalEnglish = fechaFinal.replace(
+            /(\d{2})\s+(\w+)\s+(\d{4})/, 
+            (_, dia, mes, anio) => `${dia} ${meses[mes]} ${anio}`
+        );
+        console.log(`Fecha final: ${fechaFinalEnglish}`); // "06 August 2025 10:08:07 AM"
+        
+        // 4. Parsear fecha
+        const fecha = new Date(fechaFinalEnglish);
+        console.log(`Fecha parseada: ${fecha}`);
+        
+        // 5. Formatear salida
+        if (!isNaN(fecha.getTime())) {
+            const yyyy = fecha.getFullYear();
+            const mm = String(fecha.getMonth() + 1).padStart(2, '0');
+            const dd = String(fecha.getDate()).padStart(2, '0');
+            
+            const fechaFormateada = `${yyyy}-${mm}-${dd}`;
+            const fechaHTML = `${dd}-${mm}-${yyyy}`;
+            
+            console.log(`Fecha formateada: ${fechaFormateada}`);
+            console.log(`Fecha HTML: ${fechaHTML}`);
 
-        const yyyy = fecha.getFullYear();
-        const mm = String(fecha.getMonth() + 1).padStart(2, '0');
-        const dd = String(fecha.getDate()).padStart(2, '0');
+            const partesFecha = fechaFormateada.split('-');
+            console.log(`Fecha en partes: ${partesFecha}`)
+            const fechaDoc = new Date(partesFecha[0], partesFecha[1] - 1, partesFecha[2]);
+            const fechaActual = new Date();
+            console.log(`Fecha documento: ${fechaDoc}`)
+            console.log(`Fecha actual: ${fechaActual}`)
+            const diferenciaMesesH = calcularDiferenciaMeses(fechaDoc, fechaActual);
+            console.log(`Dias de emisión: ${diferenciaMesesH}`)
 
-        const fechaFormateada = `${yyyy}-${mm}-${dd}`;
-        const fechaHTML = `${dd}-${mm}-${yyyy}`;
 
-        const partesFecha = fechaFormateada.split('-');
-        const fechaDoc = new Date(partesFecha[0], partesFecha[1] - 1, partesFecha[2]);
-        const fechaActual = new Date();
-        const diferenciaMesesH = calcularDiferenciaMeses(fechaDoc, fechaActual);
+            if (diferenciaMesesH > 5 || fechaDoc.getFullYear() !== 2025) {
+                divdatoshistorial.style.display = "none";
+                divhnovig.style.display = "block";
+            }
 
-        if (diferenciaMesesH > 5 || fechaDoc.getFullYear() !== 2025) {
-            divdatoshistorial.style.display = "none";
-            divhnovig.style.display = "block";
+            document.getElementById("fechah").value = fechaHTML;
+            document.getElementById("fechah").readOnly = true;
+
+            
+            // Resto de tu lógica...
+        } else {
+            console.error("Fecha inválida");
         }
-
-        document.getElementById("fechah").value = fechaHTML;
-        document.getElementById("fechah").readOnly = true;
     }
+
 
     // =============================
     // 🔍 Otros Datos del Historial
