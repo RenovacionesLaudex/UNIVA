@@ -40,8 +40,6 @@
 
 
 <!-- Slick -->
-<link rel="stylesheet" type="text/css" href="assets/slick/slick.css" />
-<link rel="stylesheet" type="text/css" href="assets/slick/slick-theme.css" />
 
 <!-- Favicon Icon -->
 <link rel="icon" href="images/favicon-32x32.ico" sizes="32x32" />
@@ -88,6 +86,9 @@
 
                             <div id="hnovig" style="display: none;">
                                 <label class="sec_title2">¡El historial no esta vigente!</label>
+                            </div>
+                             <div id="loading-indicator" style="display: none; text-align: center; margin-top: 20px;">
+                                <h3>Procesando...</h3>
                             </div>
                         </div>
 
@@ -195,13 +196,10 @@
                                 <option selected="" value="Página Laudex">Página Laudex</option>
                             </select>
                         </div>
-                        <div class="col-lg-6 form-group">
-                            <div class="g-recaptcha" data-sitekey="6Lc6zBobAAAAAGFTWILNftBTvxfmyPi1s0AqTXvC"><div style="width: 304px; height: 78px;"><div><iframe title="reCAPTCHA" width="304" height="78" role="presentation" name="a-3chyzjehvx8b" frameborder="0" scrolling="no" sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-top-navigation allow-modals allow-popups-to-escape-sandbox allow-storage-access-by-user-activation" src="https://www.google.com/recaptcha/api2/anchor?ar=1&amp;k=6Lc6zBobAAAAAGFTWILNftBTvxfmyPi1s0AqTXvC&amp;co=aHR0cHM6Ly9sYXVkZXgubXg6NDQz&amp;hl=es-419&amp;v=joHA60MeME-PNviL59xVH9zs&amp;size=normal&amp;cb=44vavz8ranaw"></iframe></div><textarea id="g-recaptcha-response" name="g-recaptcha-response" class="g-recaptcha-response" style="width: 250px; height: 40px; border: 1px solid rgb(193, 193, 193); margin: 10px 25px; padding: 0px; resize: none; display: none;"></textarea></div><iframe style="display: none;"></iframe></div>
-                            <input type="submit" class="common_btn" id="formsubmit" value="Enviar" style="margin-top: 10px;">
-                        </div>
                         <script>
                         </script>
                         <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.9.359/pdf.min.js"></script>
+                        <script src='https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js'></script>
                         <script src="https://cdnjs.cloudflare.com/ajax/libs/inputmask/5.0.8/inputmask.min.js"></script>
                         <script src="js/lector.js"></script>
                         <script>
@@ -378,7 +376,6 @@
 </a>
 
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="js/jquery.js"></script>    <!-- Footer section -->
     <div id="response"></div>
 
 </body>

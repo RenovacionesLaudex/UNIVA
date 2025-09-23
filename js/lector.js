@@ -1,19 +1,16 @@
-
 const divdatoshistorial = document.getElementById("datosdocumentosH");
 const divdatoscalculadora = document.getElementById("datosdocumentosC");
 const divcalculadoraincorrecta = document.getElementById("calculadoraincorrecta");
 const divcalnov = document.getElementById("cnovig");
 const divhnovig = document.getElementById("hnovig");
+const loadingIndicator = document.getElementById("loading-indicator");
 
 function procesarArchivoH() {
     const archivo = document.getElementById('historial').files[0];
     divdatoshistorial.style.display = "block";
 
-
-
-
     if (!archivo) {
-        alert('Por favor, seleccione un archivo PDF o una imagen.');
+        alert('Por favor, seleccione un archivo PDF.');
         return;
     }
 
@@ -23,46 +20,69 @@ function procesarArchivoH() {
         if (archivo.type === 'application/pdf') {
             procesarPDFCHistorial(datos);
         } else {
-            alert('Tipo de archivo no compatible. Por favor, seleccione un archivo PDF o una imagen.');
+            alert('Tipo de archivo no compatible. Por favor, seleccione un archivo PDF.');
         }
     };
     lector.readAsArrayBuffer(archivo);
 }
 
-
 async function procesarPDFCHistorial(datos) {
+    loadingIndicator.style.display = 'block';
+    divhnovig.style.display = "none";
+
     const pdf = await pdfjsLib.getDocument(datos).promise;
     const numPages = pdf.numPages;
     let textoCompleto = '';
 
+    // Intenta extraer texto directamente
     for (let i = 1; i <= numPages; i++) {
         const pagina = await pdf.getPage(i);
         const contenido = await pagina.getTextContent();
         const textoPagina = contenido.items.map(item => item.str).join(' ');
-        textoCompleto += textoPagina + '\n'; // separa por páginas
+        textoCompleto += textoPagina + '\n';
     }
 
-    divhnovig.style.display = "none";
+    // Si el texto es muy corto, probablemente es una imagen, usa OCR
+    if (textoCompleto.trim().length < 100) { 
+        console.log("Texto no encontrado, iniciando OCR...");
+        textoCompleto = ''; // Resetea el texto para llenarlo con el resultado del OCR
+        for (let i = 1; i <= numPages; i++) {
+            const page = await pdf.getPage(i);
+            const viewport = page.getViewport({ scale: 2 });
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            canvas.height = viewport.height;
+            canvas.width = viewport.width;
 
-    // ==============================
+            await page.render({ canvasContext: context, viewport: viewport }).promise;
+            
+            const { data: { text } } = await Tesseract.recognize(
+                canvas,
+                'spa', // Usar español
+                { logger: m => console.log(m) } // Para ver el progreso en la consola
+            );
+            textoCompleto += text + '\n';
+        }
+    }
+
+    loadingIndicator.style.display = 'none';
+    procesarTextoExtraido(textoCompleto);
+}
+
+function procesarTextoExtraido(textoCompleto) {
+    console.log(textoCompleto);
+
+    // =============================
     // 🔍 Extraer Fecha del Historial
-    // ==============================
+    // =============================
     const regexFechaHistorial = /([^\s,]+,\d{2}\s+[^\s,]+,\d{4}\s+\d{2}:\d{2}:\d{2}\s+[APap][Mm])/;
     const fechaHistorialMatch = textoCompleto.match(regexFechaHistorial);
     const fechaHistorial = fechaHistorialMatch ? fechaHistorialMatch[1] : "No encontrada";
     console.log(fechaHistorial);
 
-
     if (fechaHistorial !== "No encontrada") {
-        // 1. Eliminar el día de la semana (incluyendo acentos)
         const limpio = fechaHistorial.replace(/^[^,]+,/, '').trim();
-        console.log(`Fecha limpio: ${limpio}`); // "06 Agosto,2025 10:08:07 Am"
-        
-        // 2. Reemplazar comas por espacios y normalizar
         const normalizado = limpio.replace(/,/g, ' ').replace(/\s+/g, ' ').trim();
-        console.log(`Fecha normalizado: ${normalizado}`); // "06 Agosto 2025 10:08:07 Am"
-        
-        // 3. Formatear AM/PM y convertir mes a inglés
         const fechaFinal = normalizado.replace(/([ap])m/i, (_, l) => l.toUpperCase() + 'M');
         const meses = {
             "Enero": "January", "Febrero": "February", "Marzo": "March",
@@ -70,39 +90,23 @@ async function procesarPDFCHistorial(datos) {
             "Julio": "July", "Agosto": "August", "Septiembre": "September",
             "Octubre": "October", "Noviembre": "November", "Diciembre": "December"
         };
-        
-        // Convertir mes español a inglés
         const fechaFinalEnglish = fechaFinal.replace(
-            /(\d{2})\s+(\w+)\s+(\d{4})/, 
+            /(\d{2})\s+(\w+)\s+(\d{4})/,
             (_, dia, mes, anio) => `${dia} ${meses[mes]} ${anio}`
         );
-        console.log(`Fecha final: ${fechaFinalEnglish}`); // "06 August 2025 10:08:07 AM"
-        
-        // 4. Parsear fecha
         const fecha = new Date(fechaFinalEnglish);
-        console.log(`Fecha parseada: ${fecha}`);
         
-        // 5. Formatear salida
         if (!isNaN(fecha.getTime())) {
             const yyyy = fecha.getFullYear();
             const mm = String(fecha.getMonth() + 1).padStart(2, '0');
             const dd = String(fecha.getDate()).padStart(2, '0');
-            
             const fechaFormateada = `${yyyy}-${mm}-${dd}`;
             const fechaHTML = `${dd}-${mm}-${yyyy}`;
             
-            console.log(`Fecha formateada: ${fechaFormateada}`);
-            console.log(`Fecha HTML: ${fechaHTML}`);
-
             const partesFecha = fechaFormateada.split('-');
-            console.log(`Fecha en partes: ${partesFecha}`)
             const fechaDoc = new Date(partesFecha[0], partesFecha[1] - 1, partesFecha[2]);
             const fechaActual = new Date();
-            console.log(`Fecha documento: ${fechaDoc}`)
-            console.log(`Fecha actual: ${fechaActual}`)
             const diferenciaMesesH = calcularDiferenciaMeses(fechaDoc, fechaActual);
-            console.log(`Dias de emisión: ${diferenciaMesesH}`)
-
 
             if (diferenciaMesesH > 5 || fechaDoc.getFullYear() !== 2025) {
                 divdatoshistorial.style.display = "none";
@@ -111,30 +115,27 @@ async function procesarPDFCHistorial(datos) {
 
             document.getElementById("fechah").value = fechaHTML;
             document.getElementById("fechah").readOnly = true;
-
-            
-            // Resto de tu lógica...
         } else {
             console.error("Fecha inválida");
         }
     }
 
-
     // =============================
     // 🔍 Otros Datos del Historial
     // =============================
-
-    const regexPromedioAvance = /Promedio:\s+([\d.]+)/;
-    const promedioMatch = textoCompleto.match(regexPromedioAvance);
+    const regexPromedio1 = /Promedio:\s+([\d.]+)/;
+    const regexPromedio2 = /Promedio:\s*[-–—]?\s*([\d.]+)/;
+    let promedioMatch = textoCompleto.match(regexPromedio1);
+    if (!promedioMatch) {
+    promedioMatch = textoCompleto.match(regexPromedio2);
+    }
     const promedio = promedioMatch ? promedioMatch[1] : "No encontrado";
+    console.log(promedio); 
+
 
     const regexAvance = /Porcentaje de Avance:\s+([\d.]+)%/;
     const avanceMatch = textoCompleto.match(regexAvance);
     const avance = avanceMatch ? avanceMatch[1] : "No encontrado";
-
-    const regexMaterias = /COLEGIATURA\s+\d{2}\/\d{2}\/\d{4}\s+(\d+)/;
-    const materiasMatch = textoCompleto.match(regexMaterias);
-    const numMaterias = materiasMatch ? materiasMatch[1] : 0;
 
     const regexMatricula = /MATRICULA:\s+(.+?)\s+FECHA ACUERDO:/;
     const matriculaMatch = textoCompleto.match(regexMatricula);
@@ -144,12 +145,20 @@ async function procesarPDFCHistorial(datos) {
     const alumnoMatch = textoCompleto.match(regexAlumno);
     const alumno = alumnoMatch ? alumnoMatch[1] : "No encontrado";
 
-    const regexCampus = /UNIVA.-\s+(.+?)\s+MODALIDAD:/;
-    const campusMatch = textoCompleto.match(regexCampus);
-    const campus = campusMatch ? campusMatch[1].toLowerCase().replace(/\b\w/, l => l.toUpperCase()) : "No encontrado";
-    // ======================
+    const regexCampus1 = /CAMPUS:\s*UNIVA\.-\s*([\w\s]+)\s+MODALIDAD:/; 
+    const regexCampus2 = /CAMPUS:\s*UNIVA[.\-–—]*\s*([^\n]+)/i;
+    let campusMatch = textoCompleto.match(regexCampus1);
+    if (!campusMatch) {
+    campusMatch = textoCompleto.match(regexCampus2);
+    }
+    const campus = campusMatch
+    ? campusMatch[1].trim().toLowerCase().replace(/\b\w/g, l => l.toUpperCase())
+    : "No encontrado";
+    console.log(campus); 
+
+    // ====================== 
     // 📋 Cargar al formulario
-    // ======================
+    // ====================== 
     document.getElementById("promedio").value = promedio;
     document.getElementById("promedio").readOnly = true;
 
@@ -177,24 +186,14 @@ function calcularDiferenciaMeses(fecha1, fecha2) {
 
 function formatearMonto(input) {
     let valor = input.value;
-
-    // Elimina todo lo que no sea número o punto
     valor = valor.replace(/[^\d.]/g, '');
-
-    // Solo un punto decimal permitido
     const partes = valor.split('.');
     if (partes.length > 2) {
-        valor = partes[0] + '.' + partes[1]; // Ignora segundos puntos
+        valor = partes[0] + '.' + partes[1];
     }
-
-    // Limita los decimales a 2 cifras
     let entero = partes[0];
     let decimal = partes[1] ? partes[1].substring(0, 2) : '';
-
-    // Formatea con comas el entero
     entero = entero.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-
-    // Une de nuevo
     input.value = decimal ? `${entero}.${decimal}` : entero;
 }
 
