@@ -108,7 +108,7 @@ function procesarTextoExtraido(textoCompleto) {
             const fechaActual = new Date();
             const diferenciaMesesH = calcularDiferenciaMeses(fechaDoc, fechaActual);
 
-            if (diferenciaMesesH > 5 || fechaDoc.getFullYear() !== 2025) {
+            if (diferenciaMesesH > 5 || fechaDoc.getFullYear() !== 2026) {
                 divdatoshistorial.style.display = "none";
                 divhnovig.style.display = "block";
             }
